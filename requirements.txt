@@ -1,7 +1,7 @@
 Flask==3.0.2
 flake8==7.0.0
 pytest==8.0.2
-pytest-cov==4.1.0s
+pytest-cov==4.1.0
 isort==5.13.2
 safety==3.0.1
 Flask-Login==0.6.3
