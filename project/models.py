@@ -24,7 +24,7 @@ class User(UserMixin, db.Model):
 
     id = mapped_column(Integer(), primary_key=True, autoincrement=True)
     email = mapped_column(String(), unique=True, nullable=False)
-    password_hashed = mapped_column(String(128), nullable=False)
+    password_hashed = mapped_column(String(255), nullable=False)
     registered_on = mapped_column(DateTime(), nullable=False)
 
     # Define the relationship to the `Book` class
