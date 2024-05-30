@@ -1,7 +1,7 @@
 from flask import (abort, current_app, flash, redirect, render_template,
                    request, url_for)
 from flask_login import current_user, login_required
-from pydantic import BaseModel, ValidationError, validator
+from pydantic import BaseModel, ValidationError, field_validator
 
 from project import db
 from project.models import Book
@@ -19,7 +19,7 @@ class BookModel(BaseModel):
     author: str
     rating: int
 
-    @validator('rating')
+    @field_validator('rating')
     def book_rating_check(cls, value):
         if value not in range(1, 6):
             raise ValueError('Book rating must be a whole number between 1 and 5')
