@@ -76,7 +76,7 @@ Navigate to 'http://127.0.0.1:5000' in your favorite web browser to view the web
 * **safety** - checks Python dependencies for known security vulnerabilities
 * **bandit** - tool designed to find common security issues in Python code
 
-This application is written using Python 3.10.
+This application is written using Python 3.12.
 
 ## Testing
 

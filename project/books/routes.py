@@ -113,8 +113,8 @@ def edit_book(id):
         db.session.add(book)
         db.session.commit()
 
-        flash(f'Book ({ book.title }) was updated!')
-        current_app.logger.info(f'Book ({ book.title }) was updated by user: { current_user.id}')
+        flash(f'Book ({book.title}) was updated!')
+        current_app.logger.info(f'Book ({book.title}) was updated by user: {current_user.id}')
         return redirect(url_for('books.list_books'))
 
     return render_template('books/edit_book.html', book=book)
