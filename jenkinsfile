@@ -1,0 +1,65 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                cleanWs()
+                git([url: "https://github.com/dungna/py-demo-unitest.git", branch: "main"])
+            }
+        }
+
+        stage("Unit test") {
+            steps {
+                parallel (
+                       'TestTask' : {
+                            sh '''
+                                pip3 install -r requirements.txt > /dev/null 2>&1
+                                python3 -m pytest \
+                                --cov-report term-missing \
+                                --cov-report xml:coverage.xml \
+                                --cov-report json:coverage.json \
+                                --cov-report lcov:coverage.info \
+                                --cov-fail-under=80 \
+                                --cov=project
+                            '''
+                        },
+                        'FlakeTask' : {
+                            sh 'python3 -m flake8 --max-line-length=150 --max-complexity 5 *.py project/*.py project/*/routes.py'
+                        },
+                        'SecurityCheckTask' : {
+                            sh '''
+                                bandit project/__init__.py
+                                bandit project/models.py
+                                bandit project/*/*.py
+                            '''
+                        }
+                    )
+            }
+        }
+        stage('Scan code') {
+            steps {
+                sh '''
+                /opt/sonar-scanner/bin/sonar-scanner \
+                  -Dsonar.projectKey=py-project-1 \
+                  -Dsonar.sources=. \
+                  -Dsonar.python.coverage.reportPaths=coverage.xml \
+                  -Dsonar.verbose=true \
+                  -Dsonar.host.url=http://127.0.0.1:9000 \
+                  -Dsonar.token=sqp_c1134f632d5b6f70fdbaa7494451c62383efbdb9
+                '''
+            }
+        }
+        stage("Deploy") {
+            when { expression { currentBuild.result == null || currentBuild.result == 'SUCCESS' }}
+            steps {
+                echo 'Deploy test'
+            }
+        }
+    }
+    post {
+        always {
+            echo "Hello"
+        }
+    }
+}
